@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 const Navbar = ({ isAuthPage }) => {
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
-
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleLogout = () => {
@@ -52,8 +51,8 @@ const Navbar = ({ isAuthPage }) => {
           Book a Table
         </Link>
 
-        {/* Profile Dropdown */}
-        {username && (
+        {/* Auth Section */}
+        {username ? (
           <div className="position-relative ms-3">
             <div
               className="rounded-circle text-white fw-bold text-uppercase d-flex justify-content-center align-items-center profile-icon"
@@ -75,6 +74,10 @@ const Navbar = ({ isAuthPage }) => {
               </div>
             )}
           </div>
+        ) : (
+          <Link to="/login" className="btn btn-sm btn-outline-primary ms-3">
+            Login
+          </Link>
         )}
       </div>
 
@@ -92,6 +95,28 @@ const Navbar = ({ isAuthPage }) => {
         }
         .dropdown-item:hover {
           background: #f8f9fa;
+        }
+
+          .profile-icon {
+          background-color: #878f47;
+          transition: transform 0.2s ease;
+        }
+        .profile-icon:hover {
+          transform: scale(1.05);
+        }
+        .dropdown-menu {
+          background: #fff;
+        }
+        .dropdown-item:hover {
+          background: #f8f9fa;
+        }
+        .btn-outline-primary {
+          border-color: #878f47;
+          color: #878f47;
+        }
+        .btn-outline-primary:hover {
+          background-color: #878f47;
+          color: #fff;
         }
       `}</style>
     </header>
