@@ -54,7 +54,7 @@ const Login = () => {
                 <Link
                   to="/"
                   className="logo d-flex flex-column align-items-center text-decoration-none"
-                >
+                >                  
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"

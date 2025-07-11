@@ -1,0 +1,13 @@
+# Root level node_modules
+/node_modules/
+
+# Backend node_modules
+/backend/node_modules/
+
+# Frontend node_modules (if using npm/yarn inside frontend)
+/frontend/node_modules/
+
+# Logs and environment
+*.log
+.env
+# Build directories
