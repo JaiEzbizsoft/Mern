@@ -26,9 +26,9 @@ import Login from './auth/login';
 import Signup from './auth/signup';
 
 // Admin components
-import Admin from './components/admin/admin';
-import MenuForm from './components/admin/menuform';
-import CategoryForm from './components/admin/categoryform';
+import Appadmin from './components/admin/App';
+import MenuForm from './components/admin/forms/menuform';
+import CategoryForm from './components/admin/forms/categoryform';
 
 // Dashboard combines all landing components
 const Dashboard = () => {
@@ -103,7 +103,7 @@ const AppWrapper = () => {
         <Route path="/menu/:category" element={<MenuCategoryPage />} />
 
         {/* Admin routes */}
-        <Route path="/admin" element={<Admin />}>
+        <Route path="/admin" element={<Appadmin/>}>
           <Route path="menu" element={<MenuForm />} />
           <Route path="category" element={<CategoryForm />} />
         </Route>

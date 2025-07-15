@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Serve uploaded images statically (public access)
-app.use('/uploads', express.static('uploads')); // Make sure /uploads folder exists
+// Serve uploaded images statically
+app.use('/uploads', express.static('uploads')); // Ensure 'uploads' folder exists
 
 // ======== MONGO CONNECTION ========
 mongoose.connect(process.env.MONGO_URI, {
@@ -23,9 +23,10 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // ======== ROUTES ========
 app.use('/api/auth', require('./routes/auth'));              // Auth routes
-app.use('/api/category', require('./routes/category'));      // Category routes (image upload, name)
-app.use('/api/menu-items', require('./routes/menuitems')); // ✅ Correct
-       // Menu item routes (upload, link to category)
+app.use('/api/category', require('./routes/category'));      // Category routes
+app.use('/api/menu-items', require('./routes/menuitems'));  // Menu item routes
+app.use('/api/bookings', require('./routes/bookingRoutes'));
+; // ✅ New Booking routes (added)
 
 // ======== START SERVER ========
 app.listen(PORT, () => {

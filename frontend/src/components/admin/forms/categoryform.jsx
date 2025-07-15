@@ -64,9 +64,12 @@ const CategoryForm = () => {
             type="file"
             name="image"
             onChange={handleChange}
+
             className="form-control"
             accept="image/*"
           />
+
+          
         </div>
 
         <div className="text-center">

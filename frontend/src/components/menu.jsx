@@ -9,7 +9,7 @@ const MainMenuPreview = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/category');
+        const res = await axios.get("http://localhost:5000/api/category");
         setCategories(res.data);
       } catch (err) {
         console.error("Failed to fetch categories", err);
@@ -20,13 +20,20 @@ const MainMenuPreview = () => {
   }, []);
 
   return (
-    <section id="menu-section" className="py-5" style={{ backgroundColor: "transparent" }}>
+    <section
+      id="menu-section"
+      className="py-5"
+      style={{ backgroundColor: "transparent" }}
+    >
       <div className="container">
         <div className="text-center mb-5">
           <h2 className="fw-bold text-white d-inline-block position-relative">
             <span
               className="px-3"
-              style={{ borderLeft: "3px solid #889048", borderRight: "3px solid #889048" }}
+              style={{
+                borderLeft: "3px solid #889048",
+                borderRight: "3px solid #889048",
+              }}
             >
               Menu
             </span>
@@ -58,7 +65,11 @@ const MainMenuPreview = () => {
                   }}
                 >
                   <img
-                    src={cat.image}
+                    src={
+                      cat.image
+                        ? `http://localhost:5000${cat.image}`
+                        : "https://via.placeholder.com/300x200.png?text=No+Image"
+                    }
                     className="card-img"
                     alt={cat.name}
                     style={{
@@ -68,6 +79,7 @@ const MainMenuPreview = () => {
                       borderRadius: "0px",
                     }}
                   />
+
                   <div
                     className="position-absolute bottom-0 w-100 px-4 py-3 d-flex justify-content-between align-items-center"
                     style={{

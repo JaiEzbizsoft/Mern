@@ -50,11 +50,12 @@ const MenuCategoryPage = () => {
                     }
                   >
                     <img
-                      src={item.image || 'https://via.placeholder.com/300x200.png?text=No+Image'}
-                      className="card-img-top"
-                      alt={item.title}
-                      style={{ height: '200px', objectFit: 'cover' }}
-                    />
+  src={item.image ? `http://localhost:5000${item.image}` : 'https://via.placeholder.com/300x200.png?text=No+Image'}
+  className="card-img-top"
+  alt={item.title}
+  style={{ height: '200px', objectFit: 'cover' }}
+/>
+
                     <div className="card-body text-center text-white">
                       <h5 className="card-title mb-0">{item.title}</h5>
                       {item.description && (
