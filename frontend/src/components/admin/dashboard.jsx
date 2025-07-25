@@ -15,21 +15,38 @@ import {
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({
-    bookings: 24,
-    categories: 6,
-    items: 42,
-    earnings: 86540,
-  });
   const [bookings, setBookings] = useState([]);
+  const [totalBookings, setTotalBookings] = useState(0);
+  const [totalCategories, setTotalCategories] = useState(0);
+const [totalItems, setTotalItems] = useState(0);
 
-  // Fetch bookings data
+  // Fetch all bookings for table
   useEffect(() => {
     axios
-      .get('http://localhost:5000/api/bookings/bookings') // Ensure the API path is correct
+      .get('http://localhost:5000/api/bookings/bookings')
       .then((res) => setBookings(res.data))
       .catch((err) => console.error('Error fetching bookings:', err));
   }, []);
+
+  // Fetch total bookings for the stat card
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000/api/bookings/total')
+      .then((res) => setTotalBookings(res.data.total))
+      .catch((err) => console.error('Error fetching total bookings:', err));
+  }, []);
+
+  // Handle booking approve/reject
+  const handleBookingStatus = (id, status) => {
+    axios
+      .put(`http://localhost:5000/api/bookings/booking/${id}/status`, { status })
+      .then((res) => {
+        setBookings((prev) =>
+          prev.map((item) => (item._id === id ? { ...item, status } : item))
+        );
+      })
+      .catch((err) => console.error('Error updating booking status:', err));
+  };
 
   const lineData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -45,6 +62,27 @@ const Dashboard = () => {
     ],
   };
 
+
+useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      const [bookingsRes, categoriesRes, itemsRes] = await Promise.all([
+        axios.get('http://localhost:5000/api/bookings/total'),
+        axios.get('http://localhost:5000/api/categories/total'),
+        axios.get('http://localhost:5000/api/items/total'),
+      ]);
+
+      setTotalBookings(bookingsRes.data.total);
+      setTotalCategories(categoriesRes.data.total);
+      setTotalItems(itemsRes.data.total);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  fetchStats();
+}, []);
+
   const pieData = {
     labels: ['Website', 'WhatsApp', 'Walk-in'],
     datasets: [
@@ -57,45 +95,31 @@ const Dashboard = () => {
     ],
   };
 
-  // Approve or Reject booking
-  const handleBookingStatus = (id, status) => {
-    axios
-      .put(`http://localhost:5000/api/bookings/booking/${id}/status`, { status })
-      .then((response) => {
-        console.log('Booking status updated:', response.data);
-        // Re-fetch bookings after status change
-        setBookings(bookings.map((booking) => 
-          booking._id === id ? { ...booking, status } : booking
-        ));
-      })
-      .catch((err) => console.error('Error updating booking status:', err));
-  };
-
   return (
     <div style={{ padding: '20px' }}>
       {/* Stats cards */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginBottom: '20px' }}>
-        {[
-          { label: 'Total Bookings', value: stats.bookings },
-          { label: 'Total Categories', value: stats.categories },
-          { label: 'Total Items', value: stats.items },
-          { label: 'Total Earnings', value: `₹${stats.earnings.toLocaleString()}` },
-        ].map((card, idx) => (
-          <div
-            key={idx}
-            style={{
-              flex: '1 1 200px',
-              background: idx === 3 ? '#889048' : '#212529',
-              color: 'white',
-              padding: '20px',
-              borderRadius: '8px',
-            }}
-          >
-            <h6>{card.label}</h6>
-            <h4>{card.value}</h4>
-          </div>
-        ))}
-      </div>
+   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginBottom: '20px' }}>
+  {[
+    { label: 'Total Bookings', value: totalBookings },
+    { label: 'Total Categories', value: totalCategories },
+    { label: 'Total Items', value: totalItems },
+  ].map((card, idx) => (
+    <div
+      key={idx}
+      style={{
+        flex: '1 1 200px',
+        background: '#212529',
+        color: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+      }}
+    >
+      <h6>{card.label}</h6>
+      <h4>{card.value}</h4>
+    </div>
+  ))}
+</div>
+
 
       {/* Charts */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginBottom: '20px' }}>
@@ -145,7 +169,12 @@ const Dashboard = () => {
                     <td style={td}>
                       <span
                         style={{
-                          color: item.status === 'approved' ? 'green' : item.status === 'rejected' ? 'red' : 'orange',
+                          color:
+                            item.status === 'approved'
+                              ? 'green'
+                              : item.status === 'rejected'
+                              ? 'red'
+                              : 'orange',
                         }}
                       >
                         {item.status || 'pending'}
@@ -156,13 +185,28 @@ const Dashboard = () => {
                         <>
                           <button
                             onClick={() => handleBookingStatus(item._id, 'approved')}
-                            style={{ backgroundColor: 'green', color: 'white', padding: '5px 10px', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+                            style={{
+                              backgroundColor: 'green',
+                              color: 'white',
+                              padding: '5px 10px',
+                              border: 'none',
+                              borderRadius: '5px',
+                              cursor: 'pointer',
+                            }}
                           >
                             Approve
                           </button>
                           <button
                             onClick={() => handleBookingStatus(item._id, 'rejected')}
-                            style={{ backgroundColor: 'red', color: 'white', padding: '5px 10px', border: 'none', borderRadius: '5px', cursor: 'pointer', marginLeft: '10px' }}
+                            style={{
+                              backgroundColor: 'red',
+                              color: 'white',
+                              padding: '5px 10px',
+                              border: 'none',
+                              borderRadius: '5px',
+                              cursor: 'pointer',
+                              marginLeft: '10px',
+                            }}
                           >
                             Reject
                           </button>
@@ -186,7 +230,15 @@ const Dashboard = () => {
   );
 };
 
-// Styles for table cells
+// Styles
+const cardStyle = {
+  flex: '1 1 200px',
+  background: '#212529',
+  color: 'white',
+  padding: '20px',
+  borderRadius: '8px',
+};
+
 const th = {
   textAlign: 'left',
   padding: '12px',

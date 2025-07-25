@@ -36,6 +36,15 @@ router.get('/bookings', async (req, res) => {
   }
 });
 
+router.get('/total',async (req, res) => {
+  try{
+    const totalbooking = await Booking.countDocuments();
+    res.json({ total: totalbooking });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to retrieve total bookings.' });
+  }
+} )
 // PUT: Approve / Reject booking
 router.put('/booking/:id/status', async (req, res) => {
   const { status } = req.body;
@@ -69,28 +78,28 @@ router.put('/booking/:id/status', async (req, res) => {
 });
 
 // Send email function
-const sendMail = async (to, subject, message) => {
+const sendMail = (to, subject, message) => {
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: process.env.GMAIL_USER, // Add your Gmail address here
-      pass: process.env.GMAIL_PASS, // Add your App Password
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: process.env.GMAIL_USER,
-    to: to, 
-    subject: subject, 
-    html: `<p>${message}</p>`, 
+    from: `"Saanjh by Rajasthan" <${process.env.GMAIL_USER}>`,
+    to,
+    subject,
+    html: `<p>${message}</p>`,
   };
 
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully');
-  } catch (error) {
-    console.error('Error sending email:', error);
-  }
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error('Error sending email:', err);
+    } else {
+      console.log('Email sent:', info.response);
+    }
+  });
 };
-
 module.exports = router;

@@ -91,6 +91,16 @@ router.get('/:category', async (req, res) => {
 });
 
 
+// In routes/itemRoutes.js or similar
+router.get('/total', async (req, res) => {
+  try {
+const total = await MenuItem.countDocuments();
+    res.json({ total });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching total items' });
+  }
+});
+
 
 
 module.exports = router;

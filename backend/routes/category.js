@@ -49,4 +49,16 @@ router.get('/', async (req, res) => {
   }
 }); 
 
+
+// get total api 
+
+router.get('/total', async (req, res) => {
+  try {
+    const total = await Category.countDocuments();
+    res.json({ total });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching total categories' });
+  }
+});
+
 module.exports = router;
