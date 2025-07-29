@@ -21,20 +21,31 @@ const Dashboard = () => {
 const [totalItems, setTotalItems] = useState(0);
 
   // Fetch all bookings for table
-  useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/bookings/bookings')
-      .then((res) => setBookings(res.data))
-      .catch((err) => console.error('Error fetching bookings:', err));
-  }, []);
+ useEffect(() => {
+  axios.get('http://localhost:5000/api/bookings/total')
+    .then((res) => setTotalBookings(res.data.total))
+    .catch((err) => console.error('Error fetching total bookings:', err));
+}, []);
 
-  // Fetch total bookings for the stat card
-  useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/bookings/total')
-      .then((res) => setTotalBookings(res.data.total))
-      .catch((err) => console.error('Error fetching total bookings:', err));
-  }, []);
+useEffect(() => {
+  axios.get('http://localhost:5000/api/category/total')
+    .then((res) => setTotalCategories(res.data.total))  // ✅ Fixed setter
+    .catch((err) => console.error('Error fetching total categories:', err));
+}, []);
+
+useEffect(() => {
+  axios.get('http://localhost:5000/api/menu-items/total')
+    .then((res) => setTotalItems(res.data.total))  // ✅ Fixed setter
+    .catch((err) => console.error('Error fetching total items:', err));
+}, []);
+
+useEffect(() => {
+  axios
+    .get('http://localhost:5000/api/bookings/bookings') // ✅ replace with your actual API
+    .then((res) => setBookings(res.data))
+    .catch((err) => console.error('Error fetching bookings:', err));
+}, []);
+
 
   // Handle booking approve/reject
   const handleBookingStatus = (id, status) => {
@@ -67,9 +78,9 @@ useEffect(() => {
   const fetchStats = async () => {
     try {
       const [bookingsRes, categoriesRes, itemsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/bookings/total'),
-        axios.get('http://localhost:5000/api/categories/total'),
-        axios.get('http://localhost:5000/api/items/total'),
+        axios.get('http://localhost:5000/api/bookings/total'),         // Bookings API
+        axios.get('http://localhost:5001/api/category/total'),         // Category API (different port)
+        axios.get('http://localhost:5002/api/menu-items/total'),       // Menu Items API (another port)
       ]);
 
       setTotalBookings(bookingsRes.data.total);
@@ -82,6 +93,7 @@ useEffect(() => {
 
   fetchStats();
 }, []);
+
 
   const pieData = {
     labels: ['Website', 'WhatsApp', 'Walk-in'],

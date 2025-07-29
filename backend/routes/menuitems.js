@@ -24,11 +24,7 @@ const upload = multer({ storage });
 // =======================
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    console.log('📥 Body:', req.body);
-    console.log('📸 File:', req.file);
-
-    const { title, price, description, category } = req.body; // ✅ FIXED: get `category` directly
-
+    const { title, price, description, category } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : '';
 
     const menuItem = new MenuItem({
@@ -36,7 +32,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       price,
       description,
       image,
-      category, // ✅ FIXED: use correct field
+      category,
     });
 
     const savedItem = await menuItem.save();
@@ -60,18 +56,24 @@ router.get('/categories', async (req, res) => {
   }
 });
 
+// ✅ ✅ ✅
+// IMPORTANT: /total route must come before /:category
+router.get('/total', async (req, res) => {
+  try {
+    const total = await MenuItem.countDocuments();
+    res.json({ total });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching total items' });
+  }
+});
+
 // =======================
-// GET /api/menu-items/:category → Get Items by Category
+// GET /api/menu-items/:category → Get Items by Category Name
 // =======================
-// GET /api/menu-items/:categoryId → fetch items by category ID
-// GET /api/menu/:categoryName
-// GET /api/menu/:categoryName
-// ✅ Get items by category name (case-insensitive)
 router.get('/:category', async (req, res) => {
   try {
     const categoryParam = req.params.category;
 
-    // Find category by name (case-insensitive match)
     const category = await Category.findOne({
       name: { $regex: new RegExp(`^${categoryParam}$`, 'i') },
     });
@@ -80,27 +82,12 @@ router.get('/:category', async (req, res) => {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    // Find all items that match the category _id
     const items = await MenuItem.find({ category: category._id });
-
     res.json(items);
   } catch (err) {
     console.error('❌ Error fetching items by category:', err);
     res.status(500).json({ message: 'Failed to fetch items' });
   }
 });
-
-
-// In routes/itemRoutes.js or similar
-router.get('/total', async (req, res) => {
-  try {
-const total = await MenuItem.countDocuments();
-    res.json({ total });
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching total items' });
-  }
-});
-
-
 
 module.exports = router;
