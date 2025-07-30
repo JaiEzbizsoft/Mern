@@ -21,10 +21,10 @@ import Signup from './auth/signup';
 
 // Admin components
 import Appadmin from './components/admin/App';
-import MenuForm from './components/admin/forms/menuform';
-import CategoryForm from './components/admin/forms/categoryform';
+import AddItems from './components/admin/additems';
+import CategoryForm from './components/admin/addcategory';
 import Bookings from './components/admin/bookings';
-import AdminDashboard from './components/admin/AdminDashboard';
+import AdminDashboard from './components/admin/admindashboard';
 // Dashboard combines all landing components
 const Dashboard = () => {
   return (
@@ -101,8 +101,8 @@ const AppWrapper = () => {
         {/* Admin Routes */}
 <Route path="/admin" element={<Appadmin />}>
   <Route index element={<AdminDashboard />} />  {/* ✅ Correct Admin Dashboard */}
-  <Route path="menu" element={<MenuForm />} />
-  <Route path="category" element={<CategoryForm />} />
+  <Route path="/admin/menuitem-form" element={<AddItems />} />
+  <Route path="/admin/category-form" element={<CategoryForm />} />
   <Route path="/admin/bookings" element={<Bookings />} />
 </Route>
 

@@ -31,10 +31,10 @@ const AdminSidebar = ({ isOpen, toggle }) => {
   };
 
   const navItems = [
-    { label: 'Dashboard', icon: <FaHome />, path: '/' },
+    { label: 'Dashboard', icon: <FaHome />, path: '/admin' },
 { label: 'Bookings', icon: <FaTable />, path: '/admin/bookings' },
-    { label: 'Add Category', icon: <FaPlus />, path: '/add-category' },
-    { label: 'Add Items', icon: <FaUtensils />, path: '/add-items' },
+    { label: 'Add Category', icon: <FaPlus />, path: "/admin/category-form" },
+    { label: 'Add Items', icon: <FaUtensils />, path: '/admin/menuitem-form' },
     { label: 'Logout', icon: <FaSignOutAlt />, path: '/logout' },
   ];
 
