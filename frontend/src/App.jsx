@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-} from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 // Main pages/components
 import Navbar from './components/navbar';
@@ -21,7 +15,7 @@ import Contact from './components/contact';
 import Footer from './components/footer';
 import MenuCategoryPage from './components/menucategorypage';
 
-// Auth
+// Auth pages
 import Login from './auth/login';
 import Signup from './auth/signup';
 
@@ -29,7 +23,8 @@ import Signup from './auth/signup';
 import Appadmin from './components/admin/App';
 import MenuForm from './components/admin/forms/menuform';
 import CategoryForm from './components/admin/forms/categoryform';
-
+import Bookings from './components/admin/bookings';
+import AdminDashboard from './components/admin/AdminDashboard';
 // Dashboard combines all landing components
 const Dashboard = () => {
   return (
@@ -96,29 +91,30 @@ const AppWrapper = () => {
       )}
 
       <Routes>
-        {/* Main public pages */}
+
+        {/* Public routes */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={!token ? <Login /> : <Navigate to="/" />} />
         <Route path="/signup" element={!token ? <Signup /> : <Navigate to="/" />} />
         <Route path="/menu/:category" element={<MenuCategoryPage />} />
 
-        {/* Admin routes */}
-        <Route path="/admin" element={<Appadmin/>}>
-          <Route path="menu" element={<MenuForm />} />
-          <Route path="category" element={<CategoryForm />} />
-        </Route>
+        {/* Admin Routes */}
+<Route path="/admin" element={<Appadmin />}>
+  <Route index element={<AdminDashboard />} />  {/* ✅ Correct Admin Dashboard */}
+  <Route path="menu" element={<MenuForm />} />
+  <Route path="category" element={<CategoryForm />} />
+  <Route path="/admin/bookings" element={<Bookings />} />
+</Route>
+
+
       </Routes>
     </>
   );
 };
 
-// Final App with Router wrapper
+// ✅ Final App component
 const App = () => {
-  return (
-    <Router>
-      <AppWrapper />
-    </Router>
-  );
+  return <AppWrapper />;
 };
 
 export default App;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaBars, FaHome, FaTable, FaUtensils, FaPlus, FaSignOutAlt } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 
 const AdminSidebar = ({ isOpen, toggle }) => {
   const sidebarStyle = {
@@ -29,22 +30,12 @@ const AdminSidebar = ({ isOpen, toggle }) => {
     padding: '15px',
   };
 
-  const linkStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    color: '#fff',
-    textDecoration: 'none',
-    padding: '10px',
-    borderRadius: '5px',
-    transition: 'background 0.3s',
-  };
-
   const navItems = [
-    { label: 'Dashboard', icon: <FaHome /> },
-    { label: 'Bookings', icon: <FaTable /> },
-    { label: 'Add Item', icon: <FaPlus /> },
-    { label: 'Menu Items', icon: <FaUtensils /> },
-    { label: 'Logout', icon: <FaSignOutAlt /> },
+    { label: 'Dashboard', icon: <FaHome />, path: '/' },
+{ label: 'Bookings', icon: <FaTable />, path: '/admin/bookings' },
+    { label: 'Add Category', icon: <FaPlus />, path: '/add-category' },
+    { label: 'Add Items', icon: <FaUtensils />, path: '/add-items' },
+    { label: 'Logout', icon: <FaSignOutAlt />, path: '/logout' },
   ];
 
   return (
@@ -55,10 +46,23 @@ const AdminSidebar = ({ isOpen, toggle }) => {
       </div>
       <nav style={navStyle}>
         {navItems.map((item, idx) => (
-          <div key={idx} style={{ ...linkStyle, backgroundColor: '#2b2b2b' }}>
+          <NavLink
+            key={idx}
+            to={item.path}
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              color: '#fff',
+              textDecoration: 'none',
+              padding: '10px',
+              borderRadius: '5px',
+              backgroundColor: isActive ? '#333' : '#2b2b2b',
+              transition: 'background 0.3s',
+            })}
+          >
             <span style={{ width: '30px', textAlign: 'center' }}>{item.icon}</span>
             {isOpen && <span style={{ marginLeft: '10px' }}>{item.label}</span>}
-          </div>
+          </NavLink>
         ))}
       </nav>
     </div>

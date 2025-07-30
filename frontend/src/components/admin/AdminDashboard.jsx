@@ -15,7 +15,6 @@ import {
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
 const Dashboard = () => {
-  const [bookings, setBookings] = useState([]);
   const [totalBookings, setTotalBookings] = useState(0);
   const [totalCategories, setTotalCategories] = useState(0);
 const [totalItems, setTotalItems] = useState(0);
@@ -24,7 +23,7 @@ const [totalItems, setTotalItems] = useState(0);
  useEffect(() => {
   axios.get('http://localhost:5000/api/bookings/total')
     .then((res) => setTotalBookings(res.data.total))
-    .catch((err) => console.error('Error fetching total bookings:', err));
+      .catch((err) => console.error('Error fetching total bookings:', err));
 }, []);
 
 useEffect(() => {
@@ -39,25 +38,11 @@ useEffect(() => {
     .catch((err) => console.error('Error fetching total items:', err));
 }, []);
 
-useEffect(() => {
-  axios
-    .get('http://localhost:5000/api/bookings/bookings') // ✅ replace with your actual API
-    .then((res) => setBookings(res.data))
-    .catch((err) => console.error('Error fetching bookings:', err));
-}, []);
+
 
 
   // Handle booking approve/reject
-  const handleBookingStatus = (id, status) => {
-    axios
-      .put(`http://localhost:5000/api/bookings/booking/${id}/status`, { status })
-      .then((res) => {
-        setBookings((prev) =>
-          prev.map((item) => (item._id === id ? { ...item, status } : item))
-        );
-      })
-      .catch((err) => console.error('Error updating booking status:', err));
-  };
+
 
   const lineData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -151,93 +136,8 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Booking Table */}
-      <div style={{ background: '#fff', borderRadius: '8px', padding: '20px' }}>
-        <h6 style={{ marginBottom: '20px' }}>Recent Bookings</h6>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', color: '#212529' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#212529', color: '#fff' }}>
-                <th style={th}>#</th>
-                <th style={th}>Name</th>
-                <th style={th}>Guests</th>
-                <th style={th}>Date</th>
-                <th style={th}>Time</th>
-                <th style={th}>Special Requests</th>
-                <th style={th}>Status</th>
-                <th style={th}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.length > 0 ? (
-                bookings.map((item, idx) => (
-                  <tr key={item._id} style={{ backgroundColor: '#f8f9fa' }}>
-                    <td style={td}>{idx + 1}</td>
-                    <td style={td}>{item.name}</td>
-                    <td style={td}>{item.people}</td>
-                    <td style={td}>{item.date}</td>
-                    <td style={td}>{item.time}</td>
-                    <td style={td}>{item.message}</td>
-                    <td style={td}>
-                      <span
-                        style={{
-                          color:
-                            item.status === 'approved'
-                              ? 'green'
-                              : item.status === 'rejected'
-                              ? 'red'
-                              : 'orange',
-                        }}
-                      >
-                        {item.status || 'pending'}
-                      </span>
-                    </td>
-                    <td style={td}>
-                      {item.status === 'pending' && (
-                        <>
-                          <button
-                            onClick={() => handleBookingStatus(item._id, 'approved')}
-                            style={{
-                              backgroundColor: 'green',
-                              color: 'white',
-                              padding: '5px 10px',
-                              border: 'none',
-                              borderRadius: '5px',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleBookingStatus(item._id, 'rejected')}
-                            style={{
-                              backgroundColor: 'red',
-                              color: 'white',
-                              padding: '5px 10px',
-                              border: 'none',
-                              borderRadius: '5px',
-                              cursor: 'pointer',
-                              marginLeft: '10px',
-                            }}
-                          >
-                            Reject
-                          </button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" style={td}>
-                    No bookings found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+  
+  
     </div>
   );
 };
