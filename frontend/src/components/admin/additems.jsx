@@ -15,7 +15,7 @@ const MenuForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/category'); // FIXED
+        const res = await axios.get('http://localhost:5000/api/category'); 
         setCategories(res.data);
       } catch (err) {
         console.error('Error fetching categories:', err);

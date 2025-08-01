@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const MenuItem = require('../models/menuitems');
+const Category = require('../models/category');
 const multer = require('multer');
 const path = require('path');
-const Category = require('../models/category');
 
 // =======================
 // Multer Configuration for File Upload
@@ -56,8 +56,7 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// ✅ ✅ ✅
-// IMPORTANT: /total route must come before /:category
+// ✅ This must come before the dynamic :category route
 router.get('/total', async (req, res) => {
   try {
     const total = await MenuItem.countDocuments();
@@ -68,20 +67,23 @@ router.get('/total', async (req, res) => {
 });
 
 // =======================
-// GET /api/menu-items/:category → Get Items by Category Name
+// GET /api/menu-items/:category → Get Items by Category Slug
 // =======================
 router.get('/:category', async (req, res) => {
   try {
     const categoryParam = req.params.category;
+    const formattedName = categoryParam.replace(/-/g, ' ').trim(); // ✅ convert "south-indian" → "South Indian"
 
-    const category = await Category.findOne({
-      name: { $regex: new RegExp(`^${categoryParam}$`, 'i') },
-    });
+    // Find the category (case-insensitive match)
+   const category = await Category.findOne({
+  name: { $regex: new RegExp(`${formattedName.replace(/\s+/g, '\\s*')}`, 'i') },
+});
 
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
 
+    // Find all menu items in this category
     const items = await MenuItem.find({ category: category._id });
     res.json(items);
   } catch (err) {

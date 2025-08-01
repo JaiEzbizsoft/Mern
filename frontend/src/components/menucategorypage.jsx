@@ -13,7 +13,7 @@ const MenuCategoryPage = () => {
       .then((res) => setItems(res.data))
       .catch((err) => console.error(err));
   }, [category]);
-
+console.log("items:", items); // Debugging log to check items fetched
   return (
     <>
       <div
@@ -23,7 +23,7 @@ const MenuCategoryPage = () => {
           minHeight: '100vh',
         }}
       >
-        <Navbar />
+          <Navbar />
         <div className="container">
           <h2 className="text-center text-white fw-bold mb-5 text-capitalize text-shadow">
             {category.replace('-', ' ')}
